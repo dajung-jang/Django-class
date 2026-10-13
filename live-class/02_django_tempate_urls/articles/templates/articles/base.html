@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  {% block style %}
+  {% endblock style %}
+</head>
+<body>
+  <a href="{% url "articles:index" %}">Index</a>
+  <a href="{% url "articles:dinner" %}">Dinner</a>
+  
+  {% comment %} 
+  다른 페이지에서 content 로 싸여 있는 부분을 여기로 가져와서 출력한다는 의미 
+  block으로 되어 있는 부분을 다른데서 땡겨서 쓰는게 아니라 이 부분에 다른 곳에서 작성한 코드를 들고와서 출력하는것
+  {% endcomment %}
+  {% block content %}
+  {% endblock content %}
+</body>
+</html>
