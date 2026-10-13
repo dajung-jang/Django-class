@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% comment %} base.html 을 상속 받겠다 {% endcomment %}
+
+{% block content %}
+  {% comment %}  
+  name 은 context 의 name  key 값 -> value로 접근 
+  {{ }} : 콧수염 괄호
+  {% endcomment %}
+  <h1>hello, {{ name }}</h1>
+
+{% endblock content %}
