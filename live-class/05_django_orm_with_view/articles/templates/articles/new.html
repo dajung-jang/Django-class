@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <h1>NEW</h1>
+  <form action="{% url "articles:create" %}" method="POST">
+    {% comment %} 위치는 상관 없고 form 태그 안에만 있으면 됨 / post 로 보내려면 token 이 필요해서 token 보내기 위해 작성하는 코드 {% endcomment %}
+    {% csrf_token %}
+    <div>
+      <label for="title">Title: </label>
+      <input type="text", name="title", id="title">
+    </div>
+    <div>
+      <label for="title">content: </label>
+      <textarea name="content" id="content"></textarea>
+    </div> 
+    <input type="submit">
+  </form>
+  <hr>
+  <a href="{% url "articles:index" %}">[메인 페이지로]</a>
+</body>
+</html>
