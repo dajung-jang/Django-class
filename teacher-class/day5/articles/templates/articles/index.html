@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>dajung 의 게시판</h1>
+
+    <hr>
+    {% comment %} 게시글 생성 페이지 로드 {% endcomment %}
+    <a href="{% url "articles:new" %}">글쓰기</a>
+    <hr>
+
+    {% comment %} context 의 articles 인 key 값 {% endcomment %}
+    {% for article in articles  %}
+        <p>글번호 : {{ article.pk }}</p>
+
+        {% comment %} 
+        a 태그 vs form 태그
+        단순한 get 요청 : a 태그
+        데이터를 보내면서 get 요청 : form 태그
+        데이터를 보내면서 post 요청 : form 태그 
+        {% endcomment %}
+        <a href="{% url "articles:detail" article.pk %}">   {% comment %} article. 이 붙는 이유는 for 문의 반복 변수 이름이 article 이고, 그 객체의 pk를 꺼내는 것이라서 {% endcomment %}
+            <p>글 제목 : {{ article.title }}</p>
+        </a>
+        
+        <p>글 내용 : {{ article.content }}</p>
+        <hr>
+    {% endfor %}
+{% endblock content %}

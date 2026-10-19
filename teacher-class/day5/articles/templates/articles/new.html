@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+    <h2>게시글 생성 페이지</h2>
+    {% comment %} 
+    form 안에 name 속성은 view.py 의 create함수안에 request.POST.get("name") 의 key 값과 동일해야 한다. 
+    {% endcomment %}
+    <form action="{% url "articles:create" %}" method = "POST">
+        {% comment %} csrf 토큰 : POST 방식의 보안 토큰 {% endcomment %}
+        {% csrf_token %}
+        <div>
+            <label for="title">TITLE : </label>
+            <input type="text" name = "title" id = "title">
+        </div>
+        <div>
+            <label for="content"> CONTENT : </label>
+            <textarea name="content" id="content"></textarea>
+        </div>
+        <input type="submit" value= "게시글 생성">
+    </form>
+
+{% endblock content %}
+
