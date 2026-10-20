@@ -1,10 +1,15 @@
 {% extends "base.html" %}
+{% load static %}
+
 {% block content %}
     <h1>dajung 의 게시판</h1>
 
+    {% comment %} 이미지 띄우기 {% endcomment %}
+    <img src="{% static "cat.webp" %}" alt="구름" style = "height: 300px;">
+
     <hr>
     {% comment %} 게시글 생성 페이지 로드 {% endcomment %}
-    <a href="{% url "articles:new" %}">글쓰기</a>
+    <a href="{% url "articles:create" %}">글쓰기</a>
     <hr>
 
     {% comment %} context 의 articles 인 key 값 {% endcomment %}

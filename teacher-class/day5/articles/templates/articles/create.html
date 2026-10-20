@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% comment %} 
+ModelForm 사용해서 게시글 생성하는 코드에서 사용하는 html
+{% endcomment %}
+
+{% block content %}
+    <h2>게시글 생성 페이지</h2>
+    {% comment %} 
+    form 안에 name 속성은 view.py 의 create함수안에 request.POST.get("name") 의 key 값과 동일해야 한다. 
+    enctype = "multipart/form-data" ==> 파일(이미지, 문서 등)을 서버에 전송할 수 있다.
+    {% endcomment %}
+    <form action="{% url "articles:create" %}" method = "POST" enctype = "multipart/form-data">
+        {% comment %} csrf 토큰 : POST 방식의 보안 토큰 {% endcomment %}
+        {% csrf_token %}
+        
+        {% comment %} 
+        form 태그에 들어가는 구성들을 ModelForm(class Meta)이 자동으로 만들어 줌
+        view.py 에서 context 로 넘겨준 form 을 받아온 거임
+        {% endcomment %}
+        {{ form.as_p }}
+        <input type="submit" value= "게시글 생성">
+    </form>
+
+
+{% endblock content %}
+

@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from .forms import ArticleForm
 
 # Article 로 만들어야헸는데 테이블을 Articles 로 잘못 만들었음
 # 현재 디렉토리에서 models.py 들어가서 Articles 모델(DB 테이블) 가져오겠다.
@@ -25,6 +26,9 @@ def detail(request, pk):
     }
     return render(request, 'articles/detail.html', context)
 
+"""
+# html 의 form 태그 사용 할 때 코드
+
 # 게시글 새로 작성하기 위한 페이지 로드
 def new(request):
     return render(request, 'articles/new.html')
@@ -46,7 +50,33 @@ def create(request):
     article.save()
 
     return redirect('articles:detail', article.pk)
+"""
 
+""" ModelForm 사용 방식 """
+def create(request):
+    # 1. 내가 게시글 생성 버튼 눌렀을 때 (POST 요청)
+    if request.method == "POST" :
+        # print(reqeust.POST) 하면 ==> title, content 나옴 (사용자가 입력한 거)
+        # request.FILES -> 업로드한 데이터
+        form = ArticleForm(request.POST, request.FILES)    
+        # 유효성 검사
+        if form.is_valid():     # 주관식 단골 문제
+            article = form.save()
+            # POST 요청 + DB 에 저장 ==> 리다이랙트
+            return redirect('articles:detail', article.pk)
+    
+    # 2. 내가 글쓰기 버튼 눌렀을 때 (html 페이지 들어갔을 때)
+    # == POST 요청이 아닐 때 ==> 게시글 생성 버튼 누르기 전 or 유효성 검사 실패했을 때
+    else:
+        form = ArticleForm()
+        # GET 요청인 경우
+    context = {
+        'form': form,
+    }
+    return render(request, 'articles/create.html', context)
+
+'''
+# modelForm 사용 안 할 때 쓰는 거
 # CREATE 와 차이 : UPDATE 는 전에 있던 게시글을 조회 해야함
 def edit(request, pk):
     article = Articles.objects.get(pk = pk)
@@ -63,6 +93,31 @@ def update(request, pk):
     article.save()
 
     return redirect('articles:detail', article.pk)
+'''
+
+# modelForm 사용 시
+def update(request, pk):
+    # 우선 기존에 있던 게시글을 조회 (QuerySetAPI)
+    article = Articles.objects.get(pk = pk)
+
+    # 1. POST 요청일 때
+    if request.method == 'POST':
+        # instance = article (기존에 있던 데이터를 미리 채우기)
+        form = ArticleForm(request.POST, request.FILES, instance = article)
+        # 유효성 검사
+        if form.is_valid():
+            form.save()
+            return redirect('articles:detail', article.pk)
+    # 2. POST요청이 아닐 때
+    else:
+        form = ArticleForm(instance= article)
+
+    # GET요청
+    context = {
+        'article': article,
+        'form': form,
+    }
+    return render(request, 'articles/update.html', context)
 
 # POST 요청 -> 리다이랙트
 def delete(request, pk):
