@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     # 프로젝트로부터 생성한 앱
     'articles',
+    'accounts',
     # 설치한 패키지
     'django_extensions',
     # django 가 기본적으로 제공하는 앱, 패키지 들 
@@ -141,3 +142,6 @@ MAILERS = {
         'BACKEND': 'django.core.mail.backends.console.EmailBackend',
     },
 }
+
+# accounts 앱의 User 모델
+AUTH_USER_MODEL = 'accounts.User'

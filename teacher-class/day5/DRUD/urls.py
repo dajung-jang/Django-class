@@ -10,4 +10,6 @@ urlpatterns = [
     # articles 앱의 urls.py 로 
     # (articles 앱(include 괄호 안에 적혀있는 앱)의 urls 에 적힌 경로는 url 경로를 'articles/' 뒤에 다 붙이겠다는 의미)
     path('articles/', include('articles.urls')),
+    # accounts 앱의 urls.py 로 (url 매핑)
+    path('accounts/', include('accounts.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
