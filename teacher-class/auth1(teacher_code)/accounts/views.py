@@ -33,7 +33,37 @@ def login(request):
     }
     return render(request, 'accounts/login.html', context)
 
+
+
+from django.contrib.auth.decorators import login_required
+
+# 로그인한 사용자만 로그아웃 할수있도록
+@login_required
 def logout(request):
     auth_logout(request)
     # 로그아웃 페이지가 따로 있나요?? X
     return redirect('articles:index')
+
+from .forms import CustomUserCreationForm
+
+def signup(request):
+    # 인증된 사용자라면 (= 이미 로그인 되어있다면)
+    if request.user.is_authenticated:
+        return redirect('articles:index')
+
+    if request.method == 'POST':    #submit 버튼 눌렀을때
+        # request.POST => 내가 회원가입 할 때 입력한 정보들
+        form = CustomUserCreationForm(request.POST)
+
+        if form.is_valid(): # 1. 유효성 저장
+            user = form.save()  # 2. DB에 저장
+            auth_login(request, user)   # 3. 로그인 (-> 회원 가입한 즉시 바로 로그인 되도록 함)
+            return redirect('articles:index')
+        
+    else:   # POST 요청 아닐떼
+        form = CustomUserCreationForm() # 빈 form
+    # 유효성 검사 실패했다
+    context = {
+        'form': form
+    }
+    return render(request, 'accounts/signup.html', context)
