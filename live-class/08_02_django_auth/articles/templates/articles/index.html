@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+
+  <h1>메인 페이지</h1>
+
+  
+
+  {% comment %} 로그인 되어 있다면 {% endcomment %}
+  {% if request.user.is_authenticated %}
+    <h3>Hello, {{ user.username }}</h3>
+    {% comment %} 
+    아래처럼 써도 위에 user.username 으로 쓴 것과 동일한 결과 나옴 -> django 에서 편의를 봐준거임 (부모 AbstracUser 함수에 안에 매직메소드로 적혀 있음)
+    그치만 원래 정확하게 쓴 코드는 위에 쓴 user.username 임
+    <h3>Hello, {{ user }}</h3> 
+    {% endcomment %}
+
+    {% comment %} 게시글 작성 버튼 {% endcomment %}
+    <a href="{% url "articles:create" %}">[CREATE]</a>
+    {% for article in articles %}
+      <article>
+        <h3>
+          <a href="{% url 'articles:detail' article.pk %}">{{ article.title }}</a>
+        </h3>
+        <p>글 번호: {{ article.pk }}</p>
+        <p>{{ article.content }}</p>
+      </article>
+      <hr>
+    {% endfor %}
+
+    {% comment %} 로그아웃 버튼 {% endcomment %}
+    <form action="{% url "accounts:logout" %}" method="POST">
+      {% csrf_token %}
+      <input type="submit" value="LOGOUT">
+    </form>
+
+    {% comment %} 회원탈퇴 버튼 {% endcomment %}
+    <form action="{% url "accounts:delete" %}" method="POST">
+      {% csrf_token %}
+      <input type="submit" value="DELETE_USER">
+    </form>
+
+  {% comment %} 로그인 되어 있지 않으면 {% endcomment %}
+  {% else %}
+    {% comment %} 로그인 버튼 {% endcomment %}
+    <a href="{% url "accounts:login" %}">[LOGIN]</a>
+
+    {% comment %} 회원가입 버튼 {% endcomment %}
+    <a href="{% url "accounts:signup" %}">[SIGNUP]</a>
+  {% endif %}
+
+</body>
+</html>
