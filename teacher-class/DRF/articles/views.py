@@ -1,8 +1,9 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
-from .models import Article
-from .serializers import ArticleListSerializer, ArticleSerializer
+from .models import Article, Comment
+from .serializers import ArticleListSerializer, ArticleSerializer, CommentSerializer
+
 # list : 전체 객체 조회 -> 객체가 하나도 없다 : 404 예외 발생 시킴
 # object : 단일 객체 조회 -> 객체가 없다 : 404 예외 발생 시킴
 # 4xx 에러 : 클라이언트 에러
@@ -51,7 +52,48 @@ def article_detail(request, article_pk):
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data)
+
+# 전체 댓글 조회
+@api_view(['GET'])
+def comment_list(request):
+    # 댓글이 하나도 없으면 404 Not found 에러 뜨게
+    comments = get_list_or_404(Comment)
+    # 직렬화
+    serializer = CommentSerializer(comments, many=True)
+    return Response(serializer.data)
+
+@api_view(['DELETE', 'GET', 'PUT'])
+def comment_detail(request, comment_pk):
+    comment = get_object_or_404(Comment, pk=comment_pk)
+    # 단일 댓글 조회
+    if request.method == 'GET':
+        serializer = CommentSerializer(comment)
+        return Response(serializer.data)
     
+    # 단일 댓글 수정
+    elif request.method == 'PUT':
+        # comment (create 와 차이점), request.data : 사용자가 입력한 content
+        serializer = CommentSerializer(comment, data=request.data)
+        # raise_exception=True : 유효하지 않을 경우 예외 발생
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data)
+
+    # 단일 댓글 삭제
+    elif request.method == 'DELETE':
+        comment.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['POST'])
+def comment_create(request, article_pk):
+    # 1. 게시글 없으면 404 에러
+    article = get_object_or_404(Article, pk=article_pk)
+    serializer = CommentSerializer(data=request.data)
+    # 2. 유효ㅕ성 검사 실패하면 예외 발생 (raise_exception=True)
+    if serializer.is_valid(raise_exception=True):
+        serializer.save(article=article)
+        # 3. 댓글 생성 성공 201_CREATED
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
         
 
     
